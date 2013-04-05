@@ -24,6 +24,9 @@ import com.lds.mati.sudokuSolver.sudoku.SudokuProblem;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +59,8 @@ public class GUI extends JFrame {
 	private JMenuItem mntmTrudny;
 
 	private JButton btnRozwi;
+	private JMenu mnPlik;
+	private JMenuItem mntmZapisz;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public GUI() {
@@ -65,6 +70,19 @@ public class GUI extends JFrame {
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
+
+		mnPlik = new JMenu("Plik");
+		menuBar.add(mnPlik);
+
+		mntmZapisz = new JMenuItem("Zapisz");
+		mntmZapisz.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setButtons(false);
+				saveSudoku();
+				setButtons(true);
+			}
+		});
+		mnPlik.add(mntmZapisz);
 
 		JMenu mnGraj = new JMenu("Graj");
 		menuBar.add(mnGraj);
@@ -222,6 +240,25 @@ public class GUI extends JFrame {
 		buttonGroup.add(rdbtnNewRadioButton);
 	}
 
+	private void saveSudoku() {
+		PrintWriter out;
+		try {
+			out = new PrintWriter(new File("sudoku.txt"));
+			for (int i = 0; i < sudoku.length; ++i) {
+				if (i != 0 && i % 3 == 0)
+					out.print(" ");
+				if (i != 0 && i % 9 == 0)
+					out.println();
+				out.print(sudoku[i].getSelectedItem()+";");
+			}
+			out.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "B³¹d pliku!");
+		}
+
+	}
+
 	@SuppressWarnings("rawtypes")
 	private void game(int mode) {
 		reset();
@@ -320,13 +357,13 @@ public class GUI extends JFrame {
 			t.setSelectedIndex(0);
 		}
 	}
-	
-	private void setButtons(boolean enabled){
-		 btnSprawd.setEnabled(enabled);
-		 mntmatwy.setEnabled(enabled);
-		 mntmredni.setEnabled(enabled);
-		 mntmTrudny.setEnabled(enabled);
-		 btnRozwi.setEnabled(enabled);
+
+	private void setButtons(boolean enabled) {
+		btnSprawd.setEnabled(enabled);
+		mntmatwy.setEnabled(enabled);
+		mntmredni.setEnabled(enabled);
+		mntmTrudny.setEnabled(enabled);
+		btnRozwi.setEnabled(enabled);
 	}
 
 }
